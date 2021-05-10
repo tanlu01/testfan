@@ -1,0 +1,9 @@
+# OMS小二后台登录,通过手机号=<phone>和密码=<password>
+* oms登陆,phone=<phone>,password=<password>
+* 注入cookies到OmsApiHeaders
+
+
+# OMS审核商品
+* oms操作审核商品
+* 获取商品ID并加入data_store
+

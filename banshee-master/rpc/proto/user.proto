@@ -1,0 +1,1938 @@
+syntax = "proto3";
+
+package ptuser;
+
+import "mengtui/core/core.proto";
+
+option go_package = "ptapp.cn/interface/golang/user;user";
+option (mengtui.core.compatible_pb_prefix) = "ptuser";
+
+// User通指买家, 即app端用户, 卖家会用mall来表示
+service Service {
+    option (mengtui.core.service_default_timeout_ms) = 5000;
+
+    rpc Login (LoginArgs) returns (TokenResp) {}
+    rpc RefreshToken (RefreshTokenArgs) returns (TokenResp) {}
+    rpc UserByToken (UserByTokenArgs) returns (UserByTokenResp) {}
+    rpc UserById (UserByIdArgs) returns (UserByIdResp) {}
+    rpc UpdateMobile (UpdateMobileArgs) returns (UpdateMobileResp) {}
+    rpc UpdateMobileWithoutVerify (UpdateMobileWithoutVerifyArgs) returns (UpdateMobileWithoutVerifyResp) {}
+    rpc UpdateMobileFromInternalAccount(UpdateMobileFromInternalAccountArgs) returns (UpdateMobileFromInternalAccountResp);
+    rpc GenerateMobilecode (GenerateMobilecodeArgs) returns (GenerateMobilecodeResp) {}
+    rpc VerifyMobilecodeOldPhone (VerifyMobilecodeArgs) returns (VerifyMobilecodeResp) {} // 更换手机时验证老手机的验证码
+    rpc Bind (BindArgs) returns (BindResp) {}
+    rpc Unbind (UnbindArgs) returns (UnbindResp) {}
+    rpc GetBindStatus (GetBindStatusArgs) returns (GetBindStatusResp) {}
+    rpc CheckMpOpenid (CheckMpOpenidArgs) returns (CheckMpOpenidResp) {} // 检查openid是否有账号，并根据create参数来决定创建
+    rpc GetMopenid (GetMopenidArgs) returns (GetMopenidResp) {} // 获得用户的mopenid
+    rpc GetUidByMopenid (GetUidByMopenidArgs) returns (GetUidByMopenidResp) {} // 根据mopenid获得uid
+    rpc SubmitFormId (SubmitFormIdArgs) returns (SubmitFormIdResp);
+    rpc CancelAccount (CancelAccountArgs) returns (CancelAccountResp);
+    rpc RecoverAccount (RecoverAccountArgs) returns (RecoverAccountResp);
+    rpc FirstLoginStats (FirstLoginStatsArgs) returns (FirstLoginStatsResp);
+    rpc QttFarmBindAccount (QttFarmBindAccountArgs) returns (QttFarmBindAccountResp);
+    // 个人信息
+    rpc GetProfile (GetProfileArgs) returns (Profile) {}
+    rpc UpdateProfileNickname (UpdateProfileNicknameArgs) returns (UpdateProfileNicknameResp) {}
+    rpc UpdateProfileAvatar (UpdateProfileAvatarArgs) returns (UpdateProfileAvatarResp) {}
+    rpc UpdateProfileGender (UpdateProfileGenderArgs) returns (UpdateProfileGenderResp) {}
+    rpc UpdateProfileBirthday (UpdateProfileBirthdayArgs) returns (UpdateProfileBirthdayResp) {}
+    rpc UpdateProfileSignature (UpdateProfileSignatureArgs) returns (UpdateProfileSignatureResp) {}
+    rpc UpdateProfileLocation (UpdateProfileLocationArgs) returns (UpdateProfileLocationResp) {}
+
+    rpc GetWechatOpenid (GetWechatOpenidArgs) returns (GetWechatOpenidResp) {}
+    rpc GetWechatOpenidByCode (GetWechatOpenidByCodeArgs) returns (GetWechatOpenidByCodeResp) {}
+    rpc CheckMPSubscribed (CheckMPSubscribedArgs) returns (CheckMPSubscribedResp) {}
+    rpc SetMPSubscribed (SetMPSubscribedArgs) returns (SetMPSubscribedResp) {}
+    rpc GetQttMemberId (GetQttMemberIdArgs) returns (GetQttMemberIdResp) {}
+    rpc GetBuyerIdFromQttToken(GetBuyerIdFromQttTokenArgs) returns (GetBuyerIdFromQttTokenResp) {}
+    rpc GetQttInfo (GetQttInfoArgs) returns (GetQttInfoResp) {}
+
+    // 收货地址
+    rpc GetAddresses (GetAddressesArgs) returns (Addresses) {}
+    rpc GetAddress (AddressIdArgs) returns (Address) {}
+    rpc GetDefaultOrFirstAddress (GetDefaultOrFirstAddressArgs) returns (Address) {}
+    rpc CreateAddress (CreateAddressArgs) returns (CreateAddressResp) {}
+    rpc UpdateAddress (UpdateAddressArgs) returns (UpdateAddressResp) {}
+    rpc DeleteAddress (DeleteAddressArgs) returns (DeleteAddressResp) {}
+    rpc SetAddressDefault (SetAddressDefaultArgs) returns (SetAddressDefaultResp) {}
+    rpc MirgateAddress (MirgateAddressArgs) returns (MirgateAddressResp); // deprecated
+
+    // 个人收藏
+    rpc GetFavoriteGoods (GetFavoriteGoodsArgs) returns (FavoriteGoodsResp) {}
+    rpc GetAllFavoriteGoods (GetAllFavoriteGoodsArgs) returns (GetAllFavoriteGoodsResp) {}
+    rpc AddFavoriteGoods (AddFavoriteGoodsArgs) returns (AddFavoriteGoodsResp) {}
+    rpc BatchAddFavoriteGoods (BatchAddFavoriteGoodsArgs) returns (BatchAddFavoriteGoodsResp) {}
+    rpc RemoveFavoriteGoods (RemoveFavoriteGoodsArgs) returns (RemoveFavoriteGoodsResp) {}
+    rpc GetFavoriteMall (GetFavoriteMallArgs) returns (FavoriteMallResp) {}
+    rpc GetAllFavoriteMall (GetAllFavoriteMallArgs) returns (GetAllFavoriteMallResp) {}
+    rpc AddFavoriteMall (AddFavoriteMallArgs) returns (AddFavoriteMallResp) {}
+    rpc RemoveFavoriteMall (RemoveFavoriteMallArgs) returns (RemoveFavoriteMallResp) {}
+
+    // 店铺
+    rpc GetMall (GetMallArgs) returns (Mall) {} // 卖家的店铺
+    rpc GetCategory (GetCategoryArgs) returns (GetCategoryResp) {} // 店铺商品分类
+    rpc GetMallDetail (GetMallDetailArgs) returns (GetMallDetailResp) {} // 店铺详情
+    rpc RefreshMallDetail(RefreshMallDetailReq) returns (RefreshMallDetailResp) {}// 刷新店铺数据
+    rpc RefreshGetMall(RefreshGetMallReq) returns (RefreshGetMallResp) {}// 刷新店铺数据
+
+    rpc GetMallCategoryGoodsIds (GetMallCategoryGoodsIdsArgs) returns (GetMallCategoryGoodsIdsResp) {} //宝贝分类聚合页
+    rpc GetRefundAddress (GetRefundAddressArgs) returns (RefundAddress) {}
+    rpc GetDefaultOrFirstRefundAddress (GetDefaultOrFirstRefundAddressArgs) returns (RefundAddress) {}
+    rpc GetMallList (GetMallListArgs) returns (GetMallListResp) {}
+    rpc GetAllSelfSupportMallIds (GetAllSelfSupportMallIdsArgs) returns (GetAllSelfSupportMallIdsResp) {}
+    rpc GetGoodMallIds(GetGoodMallIdsArgs) returns (GetGoodMallIdsResp) {}  // 获取好店，已废弃
+    rpc BulkMallDetail (BulkMallDetailArgs) returns (BulkMallDetailResp) {} // 批量获取店铺详情
+    rpc GetGoodMallList (GetGoodMallListArgs) returns (GetGoodMallListResp) {}  // 好店列表
+    rpc GetMallBrandLicense(GetMallBrandLicenseArgs) returns(GetMallBrandLicenseResp);// 获取店铺品牌授权
+    rpc BulkMallLogo (BulkMallLogoArgs) returns (BulkMallLogoResp) {} // 批量获得店铺logo
+    rpc BulkMallQuickRefund (BulkMallQuickRefundArgs) returns (BulkMallQuickRefundResp){}; //获取店铺极速退款资格
+
+    // 注册设备
+    rpc RegisterDevice (RegisterDeviceArgs) returns (RegisterDeviceResp) {}
+    rpc DeviceIdCorrect (DeviceIdCorrectArgs) returns (DeviceIdCorrectResp) {} // 当RegisterDevice 返回的is_temp大于0时，客户端需要调用DeviceIdCorrect补偿
+    rpc BindDeviceBuyer (BindDeviceBuyerArgs) returns (BindDeviceBuyerResp) {}
+    rpc HasBindDevice (HasBindDeviceArgs) returns (HasBindDeviceResp) {}
+    rpc HasBindDevice4Tuid (HasBindDevice4TuidArgs) returns (HasBindDevice4TuidResp) {}
+    rpc GetFirstDevice (GetFirstDeviceArgs) returns (GetFirstDeviceResp);
+    rpc PopulateDeviceSource (PopulateDeviceSourceArgs) returns (PopulateDeviceSourceResp) {} // 填充device的安装来源
+    rpc PopulateDeviceImei (PopulateDeviceImeiArgs) returns (PopulateDeviceImeiResp) {} // 填充device的imei
+    rpc PopulateDeviceIdSupplier (PopulateDeviceIdSupplierArgs) returns (PopulateDeviceIdSupplierResp) {} // 填充device oaid, vaid, aaid
+    rpc PopulateDeviceDtu(PopulateDeviceDtuArgs) returns (PopulateDeviceDtuResp) {} // 更新device的dtu字段
+    rpc GetDeviceInfo (GetDeviceInfoArgs) returns (GetDeviceInfoResp) {} // 获取device信息
+    rpc GetDeviceSource (GetDeviceSourceArgs) returns (GetDeviceSourceResp) {} // 获取device source
+    rpc GetDtuByDevice(GetDtuByDeviceArgs) returns (GetDtuByDeviceResp) {} // 获取device上的dtu
+    rpc GetCidByTk (GetCidByTkArgs) returns (GetCidByTkResp) {}  // 根据tk获取命中的广告Cid
+
+    // 聊天获得头像
+    rpc BulkBuyerAvatar (BulkUserAvatarArgs) returns (BulkUserAvatarResp) {} // 批量获得买家头像昵称
+
+    //电脑人信息
+    rpc GetRobots (GetRobotArgs) returns (GetRobotResp) {} //获取固定个数的电脑人信息
+    rpc GetSimpleRobots (GetSimpleRobotsArgs) returns (GetSimpleRobotsResp) {} //获取固定个数的电脑人信息
+    rpc GetRobotById (GetRobotByIdArgs) returns (GetRobotByIdResp) {} //根据id获取对应电脑人信息
+    rpc GetRobotsAvatar (GetRobotsAvatarArgs) returns (GetRobotsAvatarResp) {} //获取指定电脑人头像
+
+    // 危险操作仅测试环境开放
+    rpc PurgeBuyer (PurgeBuyerArgs) returns (PurgeBuyerResp) {} // 删除用户，清空手机号，清空微信openid，unionid等信息。清除token
+    rpc AdminPurgeBuyer (AdminPurgeBuyerArgs) returns (AdminPurgeBuyerResp); // 管理员删除用户，只能删除指定好的用户
+    rpc AdminGetPurgeBuyer (AdminGetPurgeBuyerArgs) returns (AdminGetPurgeBuyerResp);
+
+    //获取region信息
+    rpc GetRegionsById (GetRegionsByIdArgs) returns (GetRegionsByIdResp) {}
+    rpc GetProvinceCityById (GetProvinceCityByIdArgs) returns (GetProvinceCityByIdResp) {}
+
+    //获取绑定设备的用户数量
+    rpc GetBindDeviceInfo (GetBindDeviceInfoArgs) returns (GetBindDeviceInfoResp) {}
+    // 标签
+    rpc BindDeviceTag (BindDeviceTagArgs) returns (BindDeviceTagResp);
+    rpc BindBuyerTag (BindBuyerTagArgs) returns (BindBuyerTagResp);
+    rpc GetTags (GetTagsArgs) returns (GetTagsResp);
+    rpc DelBuyerTags (DelBuyerTagsArgs) returns (DelBuyerTagsResp);
+    rpc DelDeviceTags (DelDeviceTagsArgs) returns (DelDeviceTagsResp);
+    rpc GetBuyerRealName (GetBuyerRealNameArgs) returns (GetBuyerRealNameResp);
+    rpc GetRealNameById (GetRealNameByIdArgs) returns (GetRealNameByIdResp);
+    rpc UpdateVerifiedById (UpdateVerifiedByIdArgs) returns (UpdateVerifiedByIdResp);
+    rpc InsertRealName (InsertRealNameArgs) returns (InsertRealNameResp);
+    // 现金卡
+    rpc GetBuyerCashCardList (GetBuyerCashCardListArgs) returns (GetBuyerCashCardListResp);
+    rpc ActivateCashCard (ActivateCashCardArgs) returns (BuyerCashCard);
+    rpc UseCashCard (UseCashCardArgs) returns (UseCashCardResp);
+    rpc RefundCashCard (RefundCashCardArgs) returns (RefundCashCardResp);
+    rpc GetCashCard (GetCashCardArgs) returns (BuyerCashCard);
+
+    //检查地址信息
+    rpc CheckLocation (CheckLocationArgs) returns (CheckLocationResp);
+
+    //收集用户建议
+    rpc UserSuggestion (UserSuggestionArgs) returns (UserSuggestionResp);
+    rpc FetchUsersSuggestion (FetchUserSuggestionArgs) returns (FetchUserSuggestionResp);
+
+    //根据用户的经纬度坐标获取 poi 列表
+    rpc POIList (POIListArgs) returns (POIListResp);
+
+    //根据用户的收货地址获取对应的经纬度信息
+    rpc GetUserAddressLocation (GetUserAddressLocationArgs) returns (GetUserAddressLocationResp);
+
+    // 根据用户的收货地址ID获取对应的经纬度信息
+    rpc GetUserAddressLocationByAddrId(GetUserAddressLocationByAddrIdArgs) returns (GetUserAddressLocationResp);
+
+    rpc GoodreviewReward (GoodreviewRewardArgs) returns (GoodreviewRewardResp);
+
+    rpc GetUserPropCategoryList (GetUsePropCategoryListArgs) returns (GetUsePropCategoryListResp);
+
+    // 用户自设开关（通用接口）
+    rpc SetUserSwitch (SetUserSwitchArgs) returns (SetUserSwitchResp);
+
+    // 获取用户自设开关（通用接口）
+    rpc GetUserSwitch (GetUserSwitchArgs) returns (GetUserSwitchResp);
+    rpc GetUserSwitches (GetUserSwitchesArgs) returns (GetUserSwitchesResp);
+
+    rpc MirgateUserData (MirgateUserDataArgs) returns (EmptyResp);
+
+    rpc DeleteQttAuth (DeleteQttAuthArgs) returns (DeleteQttAuthResp);
+
+    // 黑名单相关
+    // 测评黑名单用户判断
+    rpc IsUserInEvaluateBlackList (IsUserInEvaluateBlackListArgs) returns (IsUserInEvaluateBlackListResp);
+
+    // 用户中心属性（FilterVariable 使用，非离线计算，不保证性能）
+    rpc UserCenterFilterVariable (UserCenterFilterVariableArgs) returns (UserCenterFilterVariableResp) {}
+
+    // 设备中心属性（FilterVariable 使用，非离线计算，不保证性能）
+    rpc TkCenterFilterVariable (TkCenterFilterVariableArgs) returns (TkCenterFilterVariableResp) {}
+
+    //获取unionId
+    rpc GetUnionId (GetUnionIdArgs) returns (GetUnionIdResp);
+    // 获取用户所有的openId
+    rpc ListBuyerOpenIdWithoutCache (ListBuyerOpenIdWithoutCacheArgs) returns (ListBuyerOpenIdWithoutCacheResp);
+    // 获取用户所有的WechatAuth
+    rpc ListBuyerWechatAuthWithoutCache (ListBuyerWechatAuthWithoutCacheArgs) returns (ListBuyerWechatAuthWithoutCacheResp);
+
+    // 弹窗计次
+    rpc IncrSwitchTimes (IncrSwitchTimesArgs) returns (IncrSwitchTimesResp);
+
+    rpc CheckUserFuncOpen (CheckUserFuncOpenArgs) returns (CheckUserFuncOpenResp);
+    //用手机号获取用户信息
+    rpc GetUserByMobile (GetUserByMobileArgs) returns (GetUserByMobileResp);
+    //app管理相关
+    rpc GetAppConfig (GetAppConfigArgs) returns (AppConfigResp);
+    rpc GetTestFlight (GetTestFlightArgs) returns (GetTestFlightResp);
+    rpc GetAppConfigs (GetAppConfigsArgs) returns (GetAppConfigsResp);
+    rpc AddAppConfig (AddAppConfigArgs) returns (AppConfigResp);
+    rpc GetH5Resource (GetH5ResourceArgs) returns (GetH5ResourceResp);
+    rpc UpdateAppConfig (UpdateAppConfigArgs) returns (UpdateConfigResp);
+    //用户手机权限管理
+    rpc SetUserPrivilege (SetUserPrivilegeArgs) returns (SetUserPrivilegeResp);
+
+    // 用户微信提现（通用接口）
+    rpc UserWXTransferCheck (UserWXTransferCheckReq) returns (UserWXTransferCheckResp);
+    // 用户微信提现，风控回调接口
+    rpc UserWXTransfer (UserWXTransferReq) returns (UserWXTransferResp);
+
+    //广告中台黑名单
+    rpc IsAdsBlackList (IsAdsBlackListArgs) returns (IsAdsBlackListResp);
+
+    //广告中台查询用户是否可以领取优惠券 (可批量查询)
+    rpc CheckUserCanTake (CheckUserCanTakeArgs) returns (CheckUserCanTakeResp);
+
+    rpc GetHotFixConfig (GetHotFixConfigArgs) returns (GetHotFixConfigResp);
+    rpc LatestUidFromTuid (LatestUidFromTuidArgs) returns (LatestUidFromTuidResp);
+
+    rpc GetDeviceIdentityByBuyerId (GetDeviceIdentityByBuyerIdArgs) returns (GetDeviceIdentityByBuyerIdResp);
+    rpc EncodeEpidByClientAndOpenid (EncodeEpidByClientAndOpenidArgs) returns (EncodeEpidByClientAndOpenidResp);
+
+    rpc GetSRSuggest(GetSRSuggestArgs) returns (GetSRSuggestResp);
+    rpc SetSRSuggest(SetSRSuggestArgs) returns (SetSRSuggestResp);
+}
+
+message AdServiceInfo {
+    string tk = 1;
+    string tuid = 2;
+    string imei = 3;
+    string source = 4;
+    string android_id = 5;
+    string extension_info = 6;
+    string category_id = 7;
+    string product_id = 8;
+    string oaid = 9;
+}
+
+message GetCidByTkArgs {
+    string tk = 1;
+}
+
+message GetCidByTkResp {
+    int64 cid = 1;
+}
+
+message GetSRSuggestResp{
+    bool    done=1;
+    string data=2;
+    int64 schedule=3;
+    string link=4;
+    repeated int64 init=5;
+}
+message GetSRSuggestArgs{
+    int64 source =1;
+}
+message SetSRSuggestArgs{
+    int64 source=1;
+    int64 schedule=2;
+    string answer=3;
+    int64 is_commit=4;
+}
+message SetSRSuggestResp{
+    bool success=1;
+}
+
+message BulkMallQuickRefundArgs{
+    repeated uint64 mall_ids = 1;
+}
+
+message BulkMallQuickRefundResp {
+    map<uint64, bool> result = 1;
+}
+
+message QttFarmBindAccountArgs{
+    string mobile = 1;
+    string qtt_uid = 2;
+    string qtt_farm_token = 3;
+}
+
+message QttFarmBindAccountResp{
+    uint64 buyer_id = 1;
+}
+
+message UpdateMobileFromInternalAccountArgs {
+    uint64 buyer_id = 1;
+    AccType type = 2;
+    string code = 3;
+}
+
+message UpdateMobileFromInternalAccountResp {
+    string mobile = 1;
+}
+
+message EncodeEpidByClientAndOpenidArgs{
+    string code = 1;
+    string client = 2;
+}
+
+message EncodeEpidByClientAndOpenidResp {
+    string epid = 1;
+}
+message CheckUserCanTakeArgs {
+    uint64 buyer_id = 1;
+    repeated uint64 coupon_ids = 2;
+}
+
+message CheckUserCanTakeResp {
+    repeated NoTakeStatus no_takes = 1;
+}
+
+// NoTakeStatus 优惠券是否可领取或发放明细
+message NoTakeStatus {
+    uint64 coupon_id = 1;
+    int32 no_take = 2;
+}
+
+
+message PopulateDeviceDtuArgs {
+    string tk = 1;
+    string tuid = 2;
+    int64 dtu = 3;
+}
+
+message PopulateDeviceDtuResp {
+
+}
+
+message GetDtuByDeviceArgs {
+    string device = 1;
+}
+
+message GetDtuByDeviceResp {
+    int64 dtu = 1;
+}
+
+message IsAdsBlackListArgs {
+    uint64 popup_id = 1;
+}
+
+message IsAdsBlackListResp {
+    bool is_blacklist = 1;
+}
+message UpdateAppConfigArgs {
+    string key = 1;
+    string type = 2;
+    int64 success = 3;
+    int64 error = 4;
+    string res = 5;
+}
+message UpdateConfigResp {
+}
+message UserWXTransferReq {
+    int64 data_id = 1;
+    int64 status = 2;
+    UserWXTransferNS namespace = 3;
+    uint64 buyer_id = 4;
+    int64 amount = 5;
+    string reason = 6;
+}
+message UserWXTransferResp {
+}
+
+message UserWXTransferCheckReq {
+    uint64 buyer_id = 1;
+    UserWXTransferNS namespace = 2;
+    string client_ip = 3;
+    string device = 4;
+    uint64 amount = 5;
+    int64 data_id = 6; // 可选参数
+}
+enum UserWXTransferNS {
+    Empty = 0;
+    Disciple = 1;
+}
+message UserWXTransferCheckResp {
+}
+
+message GetH5ResourceArgs {
+    string version_from = 1;
+    string version_to = 2;
+}
+message GetH5ResourceResp {
+    string version_from = 1;
+    string version_to = 2;
+    H5Resource full_package = 3;
+    repeated H5Resource part_package = 4;
+    bool force_update = 5;
+}
+message H5Resource {
+    string path = 1;
+    string md5 = 2;
+}
+
+message SetUserPrivilegeArgs {
+    uint64 uid = 1;
+    repeated Privilege Privileges = 2;
+}
+
+message SetUserPrivilegeResp {
+}
+
+message Privilege {
+    string name = 1;
+    enum PrivilegeValue {
+        Unknown = 0;
+        On = 1;
+        Off = 2;
+    }
+    PrivilegeValue value = 2;
+}
+
+message GetAppConfigArgs {
+    string key = 1;
+    string type = 2;
+}
+message AppConfigResp {
+    string key = 1;
+    string value = 2;
+    int64 version = 3;
+    int64 update_at = 4;
+}
+
+message GetHotFixConfigArgs {
+    string key = 1;
+    string type = 2;
+    map<string, string> filters = 3;
+}
+message GetHotFixConfigResp {
+    string key = 1;
+    string value = 2;
+    int64 version = 3;
+    int64 update_at = 4;
+}
+
+message GetTestFlightArgs {
+    string key = 1;
+    string type = 2;
+    bool volunteer = 3;
+}
+message GetTestFlightResp {
+    string key = 1;
+    string value = 2;
+    string url = 3;
+    string text = 4;
+    int64 version = 5;
+    int64 update_at = 6;
+    int64 expire_at = 7;
+}
+message GetAppConfigsArgs {
+    string type = 1;
+}
+message GetAppConfigsResp {
+    repeated AppConfigResp configs = 1;
+}
+message AddAppConfigArgs {
+    string key = 1;
+    string value = 2;
+    string type = 3;
+}
+
+message CheckUserFuncOpenArgs {
+    uint64 buyer_id = 1;
+    string name_space = 2;
+    int64 number = 3;
+    string device = 4;
+}
+
+message CheckUserFuncOpenResp {
+    int64 status = 1;
+}
+
+message EmptyResp {
+    //删除auth表数据
+}
+
+message DeleteQttAuthArgs {
+    uint64 memberid = 1;
+}
+
+message DeleteQttAuthResp {
+}
+
+message IsUserInEvaluateBlackListArgs {
+    uint64 buyer_id = 1;
+}
+
+message IsUserInEvaluateBlackListResp {
+    bool is_in_black_list = 1;
+}
+
+message SetUserSwitchArgs {
+    uint64 buyer_id = 1;
+    string name_space = 2;
+    int64 status = 3;
+    int64 expire_sec = 4;
+    int64 times = 5;
+}
+
+message SetUserSwitchResp {
+    bool success = 1;
+}
+
+message GetUserSwitchArgs {
+    uint64 buyer_id = 1;
+    string name_space = 2;
+}
+
+message GetUserSwitchResp {
+    int64 status = 1;
+    int64 times = 2;
+}
+
+message GetUserSwitchesArgs {
+    int64 status = 1;
+    string name_space = 2;
+}
+
+message GetUserSwitchesResp {
+    repeated uint64 uids = 1;
+}
+
+message GoodreviewRewardArgs {
+    uint64 buyer_id = 1;
+    string image = 2;
+}
+
+message GoodreviewRewardResp {
+
+}
+
+message POIListArgs {
+    float long = 1;
+    float lat = 2;
+}
+
+message POIListResp {
+    repeated POIItem items = 1;
+}
+
+message POIItem {
+    string title = 1;
+    string address = 2;
+    string ad_code = 3;
+    string province = 4;
+    string city = 5;
+    string district = 6;
+    uint64 distance = 7;
+    int32 province_id = 8;
+    int32 city_id = 9;
+    int32 district_id = 10;
+}
+
+message HasBindDevice4TuidArgs {
+    string tuid = 1;
+}
+
+message HasBindDevice4TuidResp {
+    bool has_bind = 1;
+}
+
+message UserSuggestionArgs {
+    uint64 uid = 1;
+    string text = 2;
+    repeated string images = 3;
+    string mobile = 4;
+    string ip = 5;
+    int32 platform = 6;
+    string app_version = 7;
+    string useragent = 8;
+    string ref = 9; // 用户反馈来源，eg:checkin（签到页面）,no_ref(default)
+    string clue1 = 10; // 见km-91253316
+    string clue2 = 11; //见km-91253316
+    string clue3 = 12;
+    string order_id = 13;
+    string ref_kind = 14;
+}
+
+message UserSuggestionResp {
+    int64  suggestion_id = 1;
+}
+
+message FetchUserSuggestionArgs {
+    string suggestion_id  = 1;
+}
+
+message FetchUserSuggestionResp {
+  uint64 uid = 1;
+  string text = 2;
+  repeated string images = 3;
+  string mobile = 4;
+  string ip = 5;
+  int32 platform = 6;
+  string app_version = 7;
+  string useragent = 8;
+  string ref = 9; //
+  string clue1 = 10; // 见km-91253316
+  string clue2 = 11; //见km-91253316
+  string clue3 = 12;
+  string ref_kind = 13;
+}
+
+
+message FirstLoginStatsArgs {
+    uint64 uid = 1;
+}
+
+message FirstLoginStatsResp {
+    Platform plt = 1;
+}
+
+message GetFirstDeviceArgs {
+    uint64 uid = 1;
+}
+
+message GetFirstDeviceResp {
+    bool has_device = 1;
+    int64 create_at = 2;
+}
+
+message MallDetail {
+    string mall_name = 1;
+    string logo = 2;
+    string master_name = 3;
+    string location = 4;
+    string phone = 5;
+    int64 open_time = 6;
+    string qualification_img = 7;
+    string food_distribution_license = 8;
+    uint64 mall_id = 9;
+}
+
+message BulkMallDetailArgs {
+    repeated uint64 mall_ids = 1;
+}
+message BulkMallDetailResp {
+    repeated MallDetail mall_details = 1;
+}
+
+message GetMallDetailArgs {
+    uint64 mall_id = 1;
+}
+
+message GetMallDetailResp {
+    string mall_name = 1;
+    string logo = 2;
+    string master_name = 3;
+    string location = 4;
+    string phone = 5;
+    int64 open_time = 6;
+    string qualification_img = 7;
+    string food_distribution_license = 8;
+    string check_out_announcement = 9;
+}
+
+message RefreshGetMallReq {
+    uint64 mall_id = 1;
+}
+
+message RefreshGetMallResp {
+}
+
+message RefreshMallDetailReq {
+    uint64 mall_id = 1;
+}
+
+message RefreshMallDetailResp {
+}
+
+message RecoverAccountArgs {
+    uint64 buyer_id = 1;
+}
+
+message RecoverAccountResp {
+}
+
+message GetCashCardArgs {
+    string num = 1;
+    string secret = 2;
+}
+
+message CancelAccountArgs {
+    uint64 buyer_id = 1;
+    string reason = 2;
+    string reason2 = 3;
+}
+
+message CancelAccountResp {
+}
+
+message RefundCashCardArgs {
+    uint64 buyer_id = 1;
+    uint64 order_id = 2;
+    int32 amount = 3;
+}
+
+message RefundCashCardResp {
+    repeated BuyerCashCardIncrDetails incr_details = 1;
+}
+
+message UseCashCardArgs {
+    uint64 buyer_id = 1;
+    repeated BuyerCashCardAudit audits = 2;
+}
+
+message UseCashCardResp {
+    repeated BuyerCashCardIncrDetails incr_details = 1;
+}
+
+message BuyerCashCardIncrDetails {
+    uint64 card_id = 1;
+    string card_num = 2;
+    string name = 3;
+    int64 expire_at = 4;
+    uint64 order_id = 5;
+    int32 amount = 6;
+    uint64 buyer_id = 7;
+    int32 after_balance = 8;
+    uint32 use_amount = 9;
+    uint32 refund_amount = 10;
+}
+
+message ActivateCashCardArgs {
+    uint64 buyer_id = 1;
+    string card_secret = 2;
+    string client_ip = 3;
+    string device = 4;
+}
+
+message GetBuyerCashCardListArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetBuyerCashCardListResp {
+    repeated BuyerCashCard available = 1;
+    repeated BuyerCashCard used_and_expired = 2;
+}
+
+message BuyerCashCard {
+    uint64 id = 1;
+    string card_num = 2;
+    int32 status = 3;
+    string name = 4;
+    int64 expire_at = 5;
+    int32 amount = 6;
+    int32 balance = 7;
+    repeated BuyerCashCardAudit audits = 8;
+    uint64 buyer_id = 9;
+}
+
+message BuyerCashCardAudit {
+    uint64 order_id = 1;
+    int32 amount = 2;
+    int32 after_balance = 3;
+    int64 create_at = 4;
+    uint64 buyer_cash_card_id = 5;
+}
+
+message AdminGetPurgeBuyerArgs {
+}
+
+message AdminGetPurgeBuyerResp {
+    repeated AdminGetPurgeBuyerItem items = 1;
+}
+
+message AdminGetPurgeBuyerItem {
+    string oid = 1;
+    string name = 2;
+}
+
+message AdminPurgeBuyerArgs {
+    string oid = 1; // mongo数据里记录的id
+}
+
+message AdminPurgeBuyerResp {
+    uint64 old_uid = 2; // 这次删除的uid
+}
+
+message SubmitFormIdArgs {
+    uint64 buyer_id = 1;
+    string form_id = 2;
+}
+
+message SubmitFormIdResp {
+}
+
+message BatchAddFavoriteGoodsArgs {
+    uint64 buyer_id = 1;
+    repeated uint64 goods_ids = 2;
+}
+
+message BatchAddFavoriteGoodsResp {
+}
+
+message InsertRealNameArgs {
+    string name = 1;
+    string id_card = 2;
+    uint64 buyer_id = 3;
+}
+
+message InsertRealNameResp {
+    int64 id = 1;
+}
+
+message UpdateVerifiedByIdArgs {
+    uint64 id = 1;
+    int32 verified_result = 2;
+}
+
+message UpdateVerifiedByIdResp {
+}
+
+message GetRealNameByIdArgs {
+    uint64 id = 1;
+}
+
+message GetRealNameByIdResp {
+    string name = 1;
+    string id_card = 2;
+    int32 is_verified = 3;
+}
+
+message GetBuyerRealNameArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetBuyerRealNameResp {
+    string name = 1;
+    string id_card = 2;
+    uint64 id = 3;
+    int32 is_verified = 4;
+}
+
+message DelBuyerTagsArgs {
+    uint64 buyer_id = 1;
+    repeated string tags = 2;
+}
+
+message DelBuyerTagsResp {
+}
+
+message DelDeviceTagsArgs {
+    uint64 device_id = 1;
+    repeated string tags = 2;
+}
+
+message DelDeviceTagsResp {
+}
+
+message GetDeviceInfoArgs {
+    string device = 1;
+}
+
+// 其他信息以后需要再返回
+message GetDeviceInfoResp {
+    int64 create_at = 1; // 注册时间
+}
+
+message GetDeviceSourceArgs {
+    string device = 1;
+}
+
+message GetDeviceSourceResp {
+    string source = 1;
+}
+
+message GetTagsArgs {
+    string device = 1;
+    uint64 buyer_id = 2;
+}
+
+message GetTagsResp {
+    repeated string device_tags = 1;
+    repeated string buyer_tags = 2;
+}
+
+message BindDeviceTagArgs {
+    string device = 1;
+    string tag = 2;
+}
+
+message BindDeviceTagResp {
+}
+
+message BindBuyerTagArgs {
+    uint64 buyer_id = 1;
+    string tag = 2;
+}
+
+message BindBuyerTagResp {
+}
+
+message PurgeBuyerArgs {
+    uint64 uid = 1;
+}
+
+message PurgeBuyerResp {
+}
+
+message GetMopenidArgs {
+    uint64 uid = 1;
+}
+
+message GetMopenidResp {
+    string mopenid = 1;
+}
+
+message GetUidByMopenidArgs {
+    string mopenid = 1;
+}
+
+message GetUidByMopenidResp {
+    uint64 uid = 1;
+}
+
+message PopulateDeviceSourceArgs {
+    string device_id = 1;
+    string source = 2;
+}
+
+message PopulateDeviceSourceResp {
+}
+
+message PopulateDeviceImeiArgs {
+    string device_id = 1;
+    string imei = 2;
+}
+
+message PopulateDeviceIdSupplierArgs {
+    string device_id = 1;
+    string oaid = 2;
+    string vaid = 3;
+    string aaid = 4;
+}
+
+message PopulateDeviceIdSupplierResp {
+}
+
+message PopulateDeviceImeiResp {
+}
+
+message CheckMpOpenidArgs {
+    string openid = 1;
+    bool create = 2;
+}
+
+message CheckMpOpenidResp {
+    uint64 buyer_id = 1;
+    bool is_new = 2;
+}
+
+message HasBindDeviceArgs {
+    uint64 buyer_id = 1;
+}
+
+message HasBindDeviceResp {
+    bool has_bind = 1;
+}
+
+message VerifyMobilecodeArgs {
+    string mobile = 1;
+    string code = 2;
+    uint64 uid = 3;
+}
+
+message VerifyMobilecodeResp {
+
+}
+
+message DeviceIdCorrectArgs {
+    string old_device_id = 1;
+    string new_device_id = 2;
+}
+
+message DeviceIdCorrectResp {
+
+}
+
+message RegisterDeviceArgs {
+    string device_id = 1;
+    string ip = 2;
+    string ua = 3;
+    string source = 4;
+    string app_ver = 5;
+    string vendor = 6;
+    string model = 7;
+    string imei = 8;
+    string idfa = 9;
+    string mac = 10;
+    string androidid = 11;
+    string advertisingid = 12;
+}
+
+message RegisterDeviceResp {
+    int32 is_temp = 1; // 大于0表示是一个临时tk，需要补偿
+}
+
+message BindDeviceBuyerArgs {
+    string device_id = 1;
+    uint64 buyer_id = 2;
+    string app_ver = 3;
+    bool is_activity = 4; // true：活动入口进来的绑定行为， false: 标准/v1/device/users
+}
+
+message BindDeviceBuyerResp {
+}
+
+message GenerateMobilecodeArgs {
+    string mobile = 1;
+}
+
+message GenerateMobilecodeResp {
+    string code = 2;
+}
+
+message GetDefaultOrFirstRefundAddressArgs {
+    uint64 mall_id = 1;
+}
+
+message GetWechatOpenidArgs {
+    uint64 buyer_id = 1;
+    string appid = 2;
+}
+
+message GetWechatOpenidResp {
+    string openid = 1;
+}
+
+message GetWechatOpenidByCodeArgs {
+    string code = 1;
+    Platform platform = 2;
+    string app_id = 3;
+}
+
+message GetWechatOpenidByCodeResp {
+    string openid = 1;
+}
+
+message GetQttMemberIdArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetQttMemberIdResp {
+    string member_id = 1;
+}
+
+message GetQttInfoArgs {
+    string access_token = 1;
+}
+
+message GetQttInfoResp {
+    string member_id = 1;
+    string nick = 2;
+    string avatar = 3;
+}
+
+message GetBuyerIdFromQttTokenArgs {
+    string token = 1;
+}
+
+message GetBuyerIdFromQttTokenResp {
+    uint64 buyer_id = 1;
+}
+
+message CheckMPSubscribedArgs {
+    uint64 buyer_id = 1;
+}
+
+message CheckMPSubscribedResp {
+    bool is_subscribed = 1;
+}
+
+message SetMPSubscribedArgs {
+    uint64 buyer_id = 1;
+    string appid = 2;
+    bool is_subscribed = 3;
+}
+
+message SetMPSubscribedResp {
+}
+
+message GetRefundAddressArgs {
+    uint64 refund_address_id = 1;
+    uint64 mall_id = 2;
+}
+
+message RefundAddress {
+    uint64 mall_id = 1;
+    int32 country_id = 2;
+    int32 province_id = 3;
+    int32 city_id = 4;
+    int32 district_id = 5;
+    string name = 6;
+    string phone = 7;
+    string mobile = 8;
+    string addr = 9;
+    string country = 10;
+    string province = 11;
+    string city = 12;
+    string district = 13;
+    int64 update_at = 14;
+    uint64 id = 15; // refund address id
+}
+
+message GetAllFavoriteMallArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetAllFavoriteMallResp {
+    repeated uint64 mall_ids = 1;
+}
+
+message RemoveFavoriteMallArgs {
+    uint64 buyer_id = 1;
+    uint64 mall_id = 2;
+}
+
+message RemoveFavoriteMallResp {
+}
+
+message AddFavoriteMallResp {
+}
+
+message AddFavoriteMallArgs {
+    uint64 buyer_id = 1;
+    uint64 mall_id = 2;
+}
+
+message GetFavoriteMallArgs {
+    uint64 buyer_id = 1;
+    string offset = 2;
+    int32 size = 3;
+}
+
+message FavoriteMallResp {
+    repeated Mall items = 1;
+    string offset = 2;
+}
+
+message GetAllFavoriteGoodsArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetAllFavoriteGoodsResp {
+    repeated uint64 goods_ids = 1;
+}
+
+message RemoveFavoriteGoodsArgs {
+    uint64 buyer_id = 1;
+    uint64 goods_id = 2;
+}
+
+message RemoveFavoriteGoodsResp {
+}
+
+message AddFavoriteGoodsResp {
+}
+
+message AddFavoriteGoodsArgs {
+    uint64 buyer_id = 1;
+    uint64 goods_id = 2;
+}
+
+message GetFavoriteGoodsArgs {
+    uint64 buyer_id = 1;
+    string offset = 2;
+    int32 size = 3;
+}
+
+message FavoriteGoodsResp {
+    repeated uint64 goods_ids = 1;
+    string offset = 2;
+}
+
+message GetGoodMallIdsArgs {
+}
+
+message GetGoodMallIdsResp {
+    repeated uint64 mall_ids = 1;
+}
+
+message GetGoodMallListArgs {
+}
+
+message GetGoodMallListResp {
+    repeated uint64 mall_ids = 1;
+}
+
+message MallScore {
+    bool shipping_rating = 1; //物流评分 true高/false低
+    bool description_rating = 2; //商品质量评分
+    bool service_rating = 3; //服务质量评分
+    repeated MarkItem mall_labels = 4; //店铺标签
+    bool is_good_mall = 5; // 是否好店
+    ScoreRating shipping_rating_int = 6; //物流评分 true高/false低
+    ScoreRating description_rating_int = 7; //商品质量评分
+    ScoreRating service_rating_int = 8; //服务质量评分
+}
+
+message MarkItem {
+    string text = 1;
+    int32 style = 2;
+    string name = 3;
+    string img_url = 4;
+    string img_ratio = 5;
+    string link = 6;
+    string icon = 7;
+}
+
+message GetMallArgs {
+    uint64 mall_id = 1;
+}
+
+message Mall {
+    uint64 mall_id = 1;
+    string mall_name = 2;
+    string mall_logo = 3;
+    string mall_phone = 4;
+    bool is_open = 5;
+    string mall_desc = 6;
+    bool chat_status = 7;
+    string offline_note = 8;
+    bool is_deleted = 9;
+    uint64 mall_type = 10;
+    MallStatus mall_status = 11;
+    int64 followers = 12; //
+    bool shipping_rating = 13; //物流评分 true高/false低
+    bool description_rating = 14; //商品质量评分
+    bool service_rating = 15; //服务质量评分
+    string wallpaper = 16; //店铺背景图片
+    string category_link = 17; //宝贝分类链接
+    repeated MarkItem mall_labels = 18; //店铺标签
+    bool is_good_mall = 19; //是否好店
+    MallOrderControl order_control = 20;
+    ScoreRating shipping_rating_int = 21; //物流评分 true高/false低
+    ScoreRating description_rating_int = 22; //商品质量评分
+    ScoreRating service_rating_int = 23; //服务质量评分
+}
+
+// 商品上对下单有影响的字段集合
+message MallOrderControl {
+    bool has_insurance = 1; // 是否有退货包运费
+}
+
+message GetCategoryArgs {
+    uint64 mall_id = 1;
+}
+
+message GetCategoryResp {
+    repeated Category cats = 1;
+}
+
+message Category {
+    string name = 1;
+    string link = 2;
+    repeated SubCategory cats = 3;
+    uint32 rank = 4;
+}
+
+message SubCategory {
+    string name = 1;
+    string link = 2;
+    uint32 cat_id = 3;
+    uint32 rank = 4;
+}
+
+message GetMallCategoryGoodsIdsArgs {
+    uint64 mall_id = 1;
+    repeated uint64 cat_ids = 2;
+    string offset = 3;
+    int32 size = 4;
+}
+
+message GetMallCategoryGoodsIdsResp {
+    repeated uint64 items = 1;
+    string offset = 2;
+}
+
+
+enum MallStatus {
+    Close = 0;
+    Open = 1;
+    CheckingOut = 2;
+    CheckOutAnnouncing = 3;
+}
+
+message BulkUserAvatarArgs {
+    repeated uint64 buyer_ids = 1;
+}
+
+message BulkUserAvatarResp {
+    repeated BulkUserAvatarRespItem items = 1;
+}
+
+message BulkUserAvatarRespItem {
+    uint64 buyer_id = 1;
+    string avatar = 2;
+    string nickname = 3;
+    string mopenid = 4;
+}
+
+message BulkMallLogoArgs {
+    repeated uint64 mall_ids = 2;
+}
+
+message BulkMallLogoResp {
+    repeated BulkMallLogoRespItem items = 1;
+}
+
+message BulkMallLogoRespItem {
+    uint64 mall_id = 1;
+    string mall_name = 2;
+    string mall_logo = 3;
+}
+
+enum AccType {
+    Wechat = 0;
+    Mobile = 1;
+    Qtt = 2;
+    Apple = 3;
+    CommonAuth = 4;
+    QttFarm = 100;  // 趣种菜购买成功后自动登录或注册
+}
+
+enum Platform {
+    PltInvalid = 0;
+    PltWechatMp = 2;
+    PltWap = 3;
+    pltWechatMiniProgram = 4;
+    pltWechatEcpssProgram = 10;
+    PltIphone = 30;
+    PltAndroid = 50;
+    PltQtt = 110;
+    PltBaiduMiniProgram = 6;
+    PltAliPayMiniProgram = 8;
+}
+
+message UpdateMobileArgs {
+    uint64 buyer_id = 1;
+    string mobile = 2;
+    string code = 3;
+    bool from_oms = 4; //是否来自后台
+}
+
+message UpdateMobileResp {
+}
+
+message GetBindStatusArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetBindStatusResp {
+    bool wechat = 1;
+    bool mobile = 2;
+}
+
+message BindArgs {
+    uint64 buyer_id = 1;
+    AccType type = 2; // 不包括手机
+    string code = 3;
+    Platform platform = 5;
+}
+
+message BindResp {
+}
+
+message UnbindArgs {
+    uint64 buyer_id = 1;
+    AccType type = 2; // 不包括手机
+}
+
+message UnbindResp {
+}
+
+message LoginArgs {
+    AccType type = 1;
+    string code = 2; // 微信: 微信的code
+    string mobile = 3;
+    Platform platform = 4;
+    LoginOpt login_opt = 5;
+    string ip = 6; // 登录ip地址
+    int32 source = 7;
+    string device_id = 8;
+}
+
+// opt
+message LoginOpt {
+    string mini_program_encryptedData = 1; // 小程序用
+    string mini_program_iv = 2; // 小程序用
+    string user_id = 3; //apple login 用
+    string email = 4; //apple login 用
+    string full_name = 5; //apple login 用
+    string authorization_code = 6; //apple login 用
+    string identity_token = 7; //apple login 用
+    string real_user_status = 8; //apple login 用
+}
+
+message TokenResp {
+    string access_token = 1;
+    string refresh_token = 2;
+    int64 expire_in = 3;
+    bool is_new = 4;
+    uint64 uid = 5;
+    string uid_h = 6;
+    string mobile = 7;
+}
+
+message RefreshTokenArgs {
+    string refresh_token = 1;
+}
+
+message UserByTokenArgs {
+    string access_token = 1;
+}
+
+message UserByIdArgs {
+    uint64 uid = 1;
+}
+
+message UserByTokenResp {
+    uint64 uid = 1;
+    Platform platform = 2;
+}
+
+message UserByIdResp {
+    string nickname = 1;
+    Gender gender = 2;
+    string mobile = 3;
+    string avatar = 4;
+    string mopenid = 5;
+    int32 source = 6; // 数据库中的source
+}
+
+message GetProfileArgs {
+    uint64 uid = 1;
+    bool is_robot = 2;
+}
+
+enum Gender {
+    Unknown = 0;
+    Male = 1;
+    Female = 2;
+}
+
+message Profile {
+    string avatar = 1;
+    string nickname = 2;
+    Gender gender = 3;
+    string mobile = 4;
+    string signature = 5;
+    string birthday = 6;
+    int32 country_id = 7;
+    int32 province_id = 8;
+    int32 city_id = 9;
+    int32 district_id = 10;
+    bool wechat = 11;
+    string country = 12;
+    string province = 13;
+    string city = 14;
+    string district = 15;
+}
+
+message GetAddressesArgs {
+    uint64 uid = 1;
+}
+
+message Addresses {
+    repeated Address addrs = 1;
+}
+
+message Address {
+    uint64 address_id = 1;
+    string name = 2;
+    string mobile = 3;
+    int32 country_id = 4;
+    int32 province_id = 5;
+    int32 city_id = 6;
+    int32 district_id = 7;
+    string address = 8;
+    bool is_default = 9;
+    uint64 uid = 10;
+    string country = 11;
+    string province = 12;
+    string city = 13;
+    string district = 14;
+    int64 update_at = 15;
+    string tag = 16;
+}
+
+message AddressIdArgs {
+    uint64 address_id = 1;
+    uint64 buyer_id = 2;
+}
+
+message CreateAddressArgs {
+    uint64 uid = 1;
+    string name = 2;
+    string mobile = 3;
+    int32 country_id = 4;
+    int32 province_id = 5;
+    int32 city_id = 6;
+    int32 district_id = 7;
+    string address = 8;
+    string address_tag = 9;
+}
+
+message CreateAddressResp {
+    uint64 address_id = 1;
+}
+
+message UpdateAddressArgs {
+    uint64 address_id = 1;
+    uint64 uid = 2;
+    string mobile = 3;
+    int32 country_id = 4;
+    int32 province_id = 5;
+    int32 city_id = 6;
+    int32 district_id = 7;
+    string address = 8;
+    string name = 9;
+    string address_tag = 10;
+    bool is_default = 11;
+}
+
+message UpdateAddressResp {
+
+}
+
+message DeleteAddressArgs {
+    uint64 address_id = 1;
+    uint64 uid = 2;
+}
+
+message DeleteAddressResp {
+}
+
+message GetDefaultOrFirstAddressArgs {
+    uint64 uid = 1;
+}
+
+message UpdateProfileNicknameArgs {
+    uint64 uid = 1;
+    string nickname = 2;
+}
+
+message UpdateProfileBirthdayArgs {
+    uint64 uid = 1;
+    string birthday = 2;
+}
+
+message UpdateProfileSignatureArgs {
+    uint64 uid = 1;
+    string signature = 2;
+}
+message UpdateProfileGenderArgs {
+    uint64 uid = 1;
+    Gender gender = 2;
+}
+message UpdateProfileAvatarArgs {
+    uint64 uid = 1;
+    string avatar = 2;
+}
+
+message UpdateProfileLocationArgs {
+    uint64 uid = 1;
+    int32 country_id = 2;
+    int32 province_id = 3;
+    int32 city_id = 4;
+    int32 district_id = 5;
+}
+
+message SetAddressDefaultArgs {
+    uint64 address_id = 1;
+    uint64 uid = 2;
+}
+
+message GetRobotArgs {
+    int32 count = 1;
+}
+message GetSimpleRobotsArgs {
+    int32 count = 1;
+}
+
+enum Sex {
+    unknown = 0;
+    male = 1;
+    female = 2;
+}
+
+
+message GetSimpleRobotsResp {
+    repeated SimpleRobot robots = 1;
+}
+
+message SimpleRobot {
+    uint64 id = 2;
+    string nick_name = 3;
+    Sex sex = 4;
+    string avatar = 13;
+    int64 birthday = 14;
+}
+
+message GetRobotResp {
+    repeated Robot robots = 1;
+}
+
+message Robot {
+    repeated RobotAddr robot_addrs = 1;
+    uint64 id = 2;
+    string nick_name = 3;
+    Sex sex = 4;
+    int32 country_id = 5;
+    string country = 6;
+    int32 province_id = 7;
+    string province = 8;
+    int32 city_id = 9;
+    string city = 10;
+    int32 district_id = 11;
+    string district = 12;
+    string avatar = 13;
+    int64 birthday = 14;
+}
+
+message RobotAddr {
+    uint64 address_id = 1;
+    string name = 2;
+    string mobile = 3;
+    int32 country_id = 4;
+    string country = 5;
+    int32 province_id = 6;
+    string province = 7;
+    int32 city_id = 8;
+    string city = 9;
+    int32 district_id = 10;
+    string district = 11;
+    string address = 12;
+    bool is_default = 13;
+    int64 update_at = 14;
+}
+
+message GetRobotByIdArgs {
+    uint64 rid = 1;
+}
+
+message GetRobotByIdResp {
+    string nick_name = 2;
+    Sex sex = 3;
+    int32 country_id = 4;
+    string country = 5;
+    int32 province_id = 6;
+    string province = 7;
+    int32 city_id = 8;
+    string city = 9;
+    int32 district_id = 10;
+    string district = 11;
+    string avatar = 12;
+    int64 birthday = 13;
+}
+
+message SetAddressDefaultResp {
+
+}
+
+message UpdateProfileLocationResp {
+}
+
+message UpdateProfileNicknameResp {
+}
+
+message UpdateProfileAvatarResp {
+}
+
+message UpdateProfileGenderResp {
+}
+
+message UpdateProfileBirthdayResp {
+}
+
+message UpdateProfileSignatureResp {
+}
+
+message GetRobotsAvatarArgs {
+    repeated uint64 ids = 1;
+}
+
+message RobotAvatar {
+    uint64 id = 1;
+    string avatar = 2;
+}
+
+message GetRobotsAvatarResp {
+    repeated RobotAvatar items = 1;
+}
+
+message GetRegionsByIdArgs {
+    repeated uint64 region_id = 1;
+}
+
+enum RegionType {
+    Country = 0;
+    Province = 1;
+    City = 2;
+    County = 3;
+    District = 4;
+}
+
+message Region {
+    uint64 id = 1;
+    uint64 parent_id = 2;
+    string national_code = 3;
+    string region_name = 4;
+    RegionType region_type = 5;
+    bool is_enabled = 6;
+}
+
+message GetRegionsByIdResp {
+    repeated Region items = 1;
+}
+
+message GetProvinceCityByIdArgs {
+    uint64 region_id = 1;
+}
+
+message GetProvinceCityByIdResp {
+    string province_city = 1;
+    string province = 2;
+    string city = 3;
+}
+
+message GetBindDeviceInfoArgs {
+    string device = 1;
+}
+
+message GetBindDeviceInfoResp {
+    int64 bind_num = 1;
+    int64 member_num = 2;
+    repeated uint64 uid_list = 3;
+}
+
+message GetMallListArgs {
+}
+
+message GetMallListResp {
+    repeated uint64 mall_id = 1;
+}
+
+message GetAllSelfSupportMallIdsArgs {
+}
+
+message GetAllSelfSupportMallIdsResp {
+    repeated uint64 mall_id = 1;
+}
+
+message CheckLocationArgs {
+    int32 country_id = 1;
+    int32 province_id = 2;
+    int32 city_id = 3;
+    int32 district_id = 4;
+    string mobile = 5;
+}
+
+message CheckLocationResp {
+    string country = 1;
+    string province = 2;
+    string city = 3;
+    string district = 4;
+}
+
+message GetUsePropCategoryListArgs {
+}
+
+message GetUsePropCategoryListResp {
+    repeated Prop props = 1;
+}
+
+message Prop {
+    string name = 1;
+    string unique_code = 2;
+    string icon = 3;
+    int32 skip_type = 4;
+    string popup = 5;
+    string link = 6;
+    string action = 7;
+}
+
+message MirgateUserDataArgs {
+    uint64 src_buyer_id = 1;
+    uint64 dst_buyer_id = 2;
+}
+
+message MirgateAddressArgs {
+    uint64 src_buyer_id = 1;
+    uint64 dst_buyer_id = 2;
+}
+
+message MirgateAddressResp {
+}
+
+message UserCenterFilterVariableArgs {
+    uint64 uid = 1;
+    string key = 2;
+}
+
+message UserCenterFilterVariableResp {
+    string value = 1; // json 格式
+    bool ok = 2; // ok
+}
+message GetUnionIdArgs {
+    uint64 buyer_id = 1;
+}
+message GetUnionIdResp {
+    string union_id = 1;
+}
+message ListBuyerOpenIdWithoutCacheArgs {
+    uint64 buyerId = 1;
+}
+message ListBuyerOpenIdWithoutCacheResp {
+    repeated string open_id_list = 1;
+}
+message WechatAuth {
+    uint64 id = 1;
+    uint64 buyer_id = 2;
+    string app_id = 3;
+    string open_id = 4;
+    int32 app_type = 5;
+}
+message ListBuyerWechatAuthWithoutCacheArgs {
+    uint64 buyer_id = 1;
+}
+message ListBuyerWechatAuthWithoutCacheResp {
+    repeated WechatAuth items = 1;
+}
+
+message IncrSwitchTimesArgs {
+    uint64 buyer_id = 1;
+    string name_space = 2;
+    int64 expire_sec = 3;
+}
+
+message IncrSwitchTimesResp {
+    bool success = 1;
+}
+
+message GetUserByMobileArgs {
+    string mobile = 1;
+}
+
+message GetUserByMobileResp {
+    uint64 id = 1;
+    string nickname = 2;
+    string mobile = 3;
+    string avatar = 4;
+    string mopenid = 5;
+}
+
+message TkCenterFilterVariableArgs {
+    string device = 1;
+    string key = 2;
+}
+
+message TkCenterFilterVariableResp {
+    string value = 1;
+    bool ok = 2;
+}
+
+message GetMallBrandLicenseArgs {
+    uint64 mall_id = 1;
+    uint64 brand_id = 2;
+}
+
+message GetMallBrandLicenseResp {
+    uint64 mall_id = 1;
+    uint64 brand_id = 2;
+    string brand_auth_cert = 3;
+    bool is_expired = 4;
+}
+
+// 这里设置address id 来源，便于以后风控扩展
+enum AddressIdSource{
+    Order = 0; // Order Address Id
+    User = 1; // User Address Id
+}
+
+message GetUserAddressLocationByAddrIdArgs{
+    uint64 id = 1;
+    AddressIdSource address_id_source = 2;
+    string address = 3; // 收货地址
+}
+
+message GetUserAddressLocationArgs {
+    string address = 1; //收货地址
+}
+
+message GetUserAddressLocationResp {
+    float lng = 1; //经度
+    float lat = 2; //纬度
+    int64 reliability = 3; //可信度(1 ~ 10, 7分以上可信)
+}
+
+message LatestUidFromTuidArgs {
+    string tuid = 1;
+}
+
+message LatestUidFromTuidResp {
+    uint64 uid = 1;
+}
+
+message UpdateMobileWithoutVerifyArgs {
+    uint64 uid = 1;
+    string mobile = 2;
+    bool force_update = 3;
+}
+
+message UpdateMobileWithoutVerifyResp {
+}
+
+message GetDeviceIdentityByBuyerIdArgs {
+    uint64 buyer_id = 1;
+}
+
+message GetDeviceIdentityByBuyerIdResp {
+    string device_identity = 1; //imei的md5, idfa或者oaid
+}
+
+enum ScoreRating {
+    NullScore = 0;
+    LowScore = 1;
+    HighScore = 2;
+}
+
+message InternalUserProfile {
+    string openid = 1;         // 外部系统的用户id
+    string nickname = 2;
+    string avatar = 3;
+    string mobile = 4;      // 手机号
+}

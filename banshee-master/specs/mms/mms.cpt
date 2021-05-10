@@ -1,0 +1,17 @@
+# MMS商家登录,通过用户名=<username>,密码=<password>
+* 获取登陆的token,然后从redis获取验证码
+* mms登陆,username=<username>,password=<password>
+* 获取商家店铺基本信息
+
+
+# 创建待审核商品,商品价钱=<price>,mall_id=<mall_id>,goods_name=<goods_name>
+* 获取创建商品的提交ID
+* 创建商品,商品价钱=<price>
+* db更新商品待审核状态,mall_id=<mall_id>,goods_name=<goods_name>
+
+
+# MMS订单发货,goods_id=<goods_id>,order_id=<order_id>
+* 校验当前店铺是否参加物流提升计划
+* 设置商品包装材质,goods_id=<goods_id>
+* 订单发货,order_id=<order_id>
+ 

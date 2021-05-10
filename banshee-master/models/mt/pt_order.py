@@ -1,0 +1,251 @@
+from peewee import *
+
+database = MySQLDatabase('pt_order', **{'charset': 'utf8', 'sql_mode': 'PIPES_AS_CONCAT', 'use_unicode': True, 'host': 'drdsfacbcz49at6y.drds.aliyuncs.com', 'port': 3306, 'user': 'mt_test_drds', 'password': 'f25327bdcdc2480cb025'})
+
+class UnknownField(object):
+    def __init__(self, *_, **__): pass
+
+class BaseModel(Model):
+    class Meta:
+        database = database
+
+class Aftersale(BaseModel):
+    amount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    buyer_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    create_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+    deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    finish_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    goods_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    handler_id = IntegerField(constraints=[SQL("DEFAULT 0")])
+    id = BigAutoField()
+    is_bot = IntegerField(constraints=[SQL("DEFAULT 0")])
+    last_complain_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    logistic_amount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    logistic_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    mall_coins_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    mall_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    mall_sign_reward_coins = IntegerField(constraints=[SQL("DEFAULT 0")])
+    mobile = CharField(constraints=[SQL("DEFAULT ''")])
+    money_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    order_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    origin_amount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_cash_card = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_fee = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_mall_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_system_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    pid = BigIntegerField(index=True)
+    prime_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    reason = IntegerField(constraints=[SQL("DEFAULT 0")])
+    recall_amount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    received = IntegerField(constraints=[SQL("DEFAULT 0")])
+    refund_address_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    refund_address_snap_id = CharField(constraints=[SQL("DEFAULT ''")])
+    refund_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    refund_real_payment_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    refund_sep_mall_service_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    refund_sep_mt_service_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    reject_reason = IntegerField(constraints=[SQL("DEFAULT 0")])
+    remark = CharField(constraints=[SQL("DEFAULT ''")])
+    return_account = CharField(constraints=[SQL("DEFAULT ''")])
+    return_method = IntegerField(constraints=[SQL("DEFAULT 0")])
+    return_status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    service_fee = IntegerField(constraints=[SQL("DEFAULT 0")])
+    speed_refund = IntegerField(constraints=[SQL("DEFAULT 0")])
+    status = IntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    success_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    system_coins_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    system_sign_reward_coins = IntegerField(constraints=[SQL("DEFAULT 0")])
+    td = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    update_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+
+    class Meta:
+        table_name = 'aftersale'
+        indexes = (
+            (('buyer_id', 'is_bot'), False),
+            (('order_id', 'type', 'status'), False),
+        )
+
+class AftersaleStep(BaseModel):
+    aftersale_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    buyer_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    create_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+    id = BigAutoField()
+    operate_desc = CharField(constraints=[SQL("DEFAULT ''")])
+    operate_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    operator_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    operator_role = IntegerField(constraints=[SQL("DEFAULT 0")])
+    remark_img = CharField(constraints=[SQL("DEFAULT ''")])
+    remark_text = CharField(constraints=[SQL("DEFAULT ''")])
+    update_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+
+    class Meta:
+        table_name = 'aftersale_step'
+
+class Extra(BaseModel):
+    account_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    buyer_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True, null=True)
+    create_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+    deduct_mall_service_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    deduct_mt_service_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    extra_json = CharField(constraints=[SQL("DEFAULT ''")])
+    is_prime = IntegerField(constraints=[SQL("DEFAULT 0")])
+    lock_handler_id = IntegerField(constraints=[SQL("DEFAULT 0")])
+    lock_reason = CharField(constraints=[SQL("DEFAULT ''")])
+    mall_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], null=True)
+    mall_sign_reward_coin = IntegerField(constraints=[SQL("DEFAULT 0")])
+    order_id = BigIntegerField(unique=True)
+    out_order_id = CharField(constraints=[SQL("DEFAULT ''")], index=True)
+    prime_discount = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    real_payment_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    sep_mall_amount = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    sep_mt_service_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    sep_plat_service_fee = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    source = CharField(constraints=[SQL("DEFAULT ''")])
+    sub_mch_id = CharField(constraints=[SQL("DEFAULT ''")], index=True)
+    tb_nickname = CharField(constraints=[SQL("DEFAULT ''")])
+    tb_open_id = CharField(constraints=[SQL("DEFAULT ''")])
+    update_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+
+    class Meta:
+        table_name = 'extra'
+
+class MtOrder(BaseModel):
+    activity_desc = CharField(constraints=[SQL("DEFAULT ''")])
+    activity_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    activity_snap_id = CharField(constraints=[SQL("DEFAULT ''")])
+    activity_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    address_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    address_snap_id = CharField(constraints=[SQL("DEFAULT ''")])
+    aftersale_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    auto_sign = IntegerField(constraints=[SQL("DEFAULT 0")])
+    buyer_confirm_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    buyer_confirm_delay_count = IntegerField(constraints=[SQL("DEFAULT 0")])
+    buyer_confirm_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    buyer_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    buyer_remark = CharField(constraints=[SQL("DEFAULT ''")])
+    buyer_review_count = IntegerField(constraints=[SQL("DEFAULT 0")])
+    client_ip = CharField(constraints=[SQL("DEFAULT ''")])
+    coupon_desc = CharField(constraints=[SQL("DEFAULT ''")])
+    create_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+    custom_addr_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    device = CharField(constraints=[SQL("DEFAULT ''")])
+    ext_goods_id = CharField(constraints=[SQL("DEFAULT ''")], index=True)
+    finish_on_refund_end = IntegerField(constraints=[SQL("DEFAULT 0")])
+    finished_status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    flag = IntegerField(constraints=[SQL("DEFAULT 0")])
+    forbid_refund = IntegerField(constraints=[SQL("DEFAULT 0")])
+    goods_cat_id = IntegerField(constraints=[SQL("DEFAULT 0")])
+    goods_group_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    goods_group_size = IntegerField(constraints=[SQL("DEFAULT 1")])
+    goods_icon = CharField(constraints=[SQL("DEFAULT ''")])
+    goods_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    goods_quantity = IntegerField(constraints=[SQL("DEFAULT 1")])
+    goods_ship_limit_seconds = IntegerField(constraints=[SQL("DEFAULT 24")])
+    goods_sku_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    goods_snap_id = CharField(constraints=[SQL("DEFAULT ''")])
+    goods_spec_desc = CharField(constraints=[SQL("DEFAULT ''")])
+    goods_unit_price = IntegerField(constraints=[SQL("DEFAULT 1")])
+    group_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    group_order_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    id = BigAutoField()
+    invite_from_attender_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    is_bot = IntegerField(constraints=[SQL("DEFAULT 0")])
+    is_deleted = IntegerField(constraints=[SQL("DEFAULT 0")])
+    is_hide = IntegerField(constraints=[SQL("DEFAULT 0")])
+    lock_status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    logistic_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    lucky_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    lucky_draw_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    mall_coins_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    mall_confirm_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    mall_confirm_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    mall_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    mod_subsidy = IntegerField(constraints=[SQL("DEFAULT 0")])
+    out_sku_sn = CharField(constraints=[SQL("DEFAULT ''")], null=True)
+    pay_success_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    payment_activity_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_cash_card = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    payment_express = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_fee = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_mall_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_method = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_money_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_system_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_total = IntegerField(constraints=[SQL("DEFAULT 0")])
+    pid = BigIntegerField(index=True)
+    platform = IntegerField(constraints=[SQL("DEFAULT 0")])
+    process_status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    recv_mobile = CharField(constraints=[SQL("DEFAULT ''")], index=True)
+    recv_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    refund_status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    review_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    seq = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    service_fee = IntegerField(constraints=[SQL("DEFAULT 0")])
+    ship_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    sign_reward_coin = IntegerField(constraints=[SQL("DEFAULT 0")])
+    subsidy = IntegerField(constraints=[SQL("DEFAULT 0")])
+    success_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    system_coins_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    td = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    union_order = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    update_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+
+    class Meta:
+        table_name = 'mt_order'
+        indexes = (
+            (('buyer_confirm_deadline', 'process_status'), False),
+            (('goods_id', 'recv_mobile', 'process_status'), False),
+            (('mall_id', 'success_time'), False),
+            (('payment_deadline', 'process_status'), False),
+            (('ship_deadline', 'process_status'), False),
+        )
+
+class RefundTrace(BaseModel):
+    aftersale_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    buyer_id = BigIntegerField(constraints=[SQL("DEFAULT 0")], index=True)
+    create_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+    id = BigAutoField()
+    operate_desc = CharField(constraints=[SQL("DEFAULT ''")])
+    operate_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    update_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+
+    class Meta:
+        table_name = 'refund_trace'
+
+class UnionOrder(BaseModel):
+    address_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    buyer_id = BigIntegerField(index=True)
+    buyer_remark = CharField(constraints=[SQL("DEFAULT ''")])
+    client_ip = CharField(constraints=[SQL("DEFAULT ''")])
+    create_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")])
+    device = CharField(constraints=[SQL("DEFAULT ''")])
+    finished_status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    id = BigAutoField()
+    is_deleted = IntegerField(constraints=[SQL("DEFAULT 0")])
+    is_prime = IntegerField(constraints=[SQL("DEFAULT 0")])
+    order_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    pay_success_time = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    payment_cash_card = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_coins_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_deadline = DateTimeField(constraints=[SQL("DEFAULT 0000-00-00 00:00:00")])
+    payment_express = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_fee = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_id = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_mall_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_method = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_money_type = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_system_discount = IntegerField(constraints=[SQL("DEFAULT 0")])
+    payment_total = IntegerField(constraints=[SQL("DEFAULT 0")])
+    pid = BigIntegerField(index=True)
+    platform = IntegerField(constraints=[SQL("DEFAULT 0")])
+    prime_discount = BigIntegerField(constraints=[SQL("DEFAULT 0")])
+    recv_mobile = CharField(constraints=[SQL("DEFAULT ''")])
+    status = IntegerField(constraints=[SQL("DEFAULT 0")])
+    update_at = DateTimeField(constraints=[SQL("DEFAULT CURRENT_TIMESTAMP")], index=True)
+
+    class Meta:
+        table_name = 'union_order'
+

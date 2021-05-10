@@ -1,0 +1,18 @@
+# 新OMS小二后台登录,通过用户名=<username>和密码=<password>
+* 新oms登陆,用户名=<username>,密码=<password>
+* 注入token到OmsApiHeaders
+
+
+# 新OMS平台创建优惠券,参数:金额=<amount>,门槛=<min_price>,适用范围类型=<rule_info>,领取限制=<select_limit>,是否可领取=<select_check>
+* 新oms新建平台优惠券,金额=<amount>,门槛=<min_price>,适用范围类型=<rule_info>,领取限制=<select_limit>,是否可领取=<select_check>
+* 获取平台优惠券列表
+* 平台优惠券审核,优惠券id=""
+
+
+# 新OMS平台创建秒杀活动,参数:新报名系统秒杀报名id=<seckill_id>,秒杀活动id=<activity_id>,档期id=<series_id>
+* 新小二后台创建秒杀活动,新报名系统秒杀报名id=<seckill_id>
+* 根据秒杀报名ID从db获取秒杀活动ID,新报名系统秒杀报名id=<seckill_id>
+* 新增活动档期,秒杀活动id=<activity_id>
+* 获取活动档期,秒杀活动id=<activity_id>
+* 获取活动关联的商品信息,秒杀活动id=<activity_id>
+* 设置商品关联活动档期,秒杀活动id="",档期id=<series_id>

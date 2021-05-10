@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package mengtui.core;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "ptapp.cn/interface/golang/mengtui/core;core";
+
+extend google.protobuf.FileOptions {
+	string compatible_pb_prefix = 1000;
+}
+
+extend google.protobuf.ServiceOptions {
+	int64 service_default_timeout_ms = 1000;
+}
+
+extend google.protobuf.MethodOptions {
+	int64 method_default_timeout_ms = 1000;
+}

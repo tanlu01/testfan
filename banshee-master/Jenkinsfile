@@ -1,0 +1,40 @@
+pipeline {
+  parameters {
+    string(defaultValue: 'p0', description: '(TagA & TagB) | TagC', name: 'TAGS')
+    string(defaultValue: 'default', description: 'default, pre, pg', name: 'STAGE')
+    // string(defaultValue: '100', description: 'virtual users ', name: 'V_USERS')
+    // string(defaultValue: '10', description: 'hatch rate', name: 'HATCH_RATE')
+    // string(defaultValue: '10s', description: 'run time', name: 'RUN_TIME')
+  }
+  // triggers {
+  //   cron('0 10 * * *')
+  // }
+  agent any
+
+  stages {
+    stage('TEST') {
+      steps {
+        sh "gauge docs spectacle specs" 
+        echo "test_case: http://192.168.18.145:7777"
+        sh "gauge run -e ${params.STAGE} -t ${params.TAGS} || true"
+      }
+      post {
+        always {
+          // archiveArtifacts artifacts: 'reports/html-report/', allowEmptyArchive: true
+          publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: "${env.JOB_NAME}_${env.BUILD_NUMBER}", reportTitles: 'mt'])
+        }
+        // success {
+        //   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: "${env.JOB_NAME}_${env.BUILD_NUMBER}", reportTitles: 'mt'])
+        // }
+      }
+    }
+    // stage('UPLOAD') {
+    //   when {
+    //     expression { currentBuild.getBuildCauses()['_class'][0] == 'hudson.triggers.TimerTrigger$TimerTriggerCause'}
+    //   }
+    //   steps {
+    //     sh "python3 /data/app/jenkins_save_3/test_jenkins.py --job_name ${env.JOB_NAME} --build_num ${env.BUILD_NUMBER} --app_name ${env.BRANCH_NAME} --filename ${env.WORKSPACE}/logs/data.json --name ${env.BRANCH_NAME} --module_name ${env.BRANCH_NAME} --owner Sam --dept 萌推 --jenkins_env ${params.STAGE}"
+    //   }
+    // }
+  }
+}

@@ -1,0 +1,40 @@
+# 萌推APP登录,通过手机号=<phone>和验证码
+* 获取qa_login_token,phone=<phone>
+* 注入token到MtApiHeaders
+* 获取登陆用户id
+
+
+# 直购下单,参数:商品id=<goods_id>,类目id=<sku_id>,支付方式=<payment_method>,店铺优惠券id=<mall_coupon_id>,平台优惠券id=<sys_coupon_id>,推币使用=<coin>,礼品卡使用=<gift_card>
+* 获取商品详情,商品id=<goods_id>
+* 商品支付页面,通过商品id=<goods_id>获取支付通道
+* 获取收货地址id
+* 支付前订单校验,商品id=<goods_id>,类目id=<sku_id>
+* 直购下单,支付方式=<payment_method>,店铺优惠券id=<mall_coupon_id>,平台优惠券id=<sys_coupon_id>,推币使用=<coin>,礼品卡使用=<gift_card>
+
+
+# 生成预支付订单并mock支付,order_id=<order_id>,payment_method=<payment_method>,platform=<platform>
+* 生成订单预支付信息,用于接下来的订单支付v1, order_id=<order_id>,payment_method=<payment_method>,platform=<platform>
+* db获取payment_id,order_id=<order_id>,flag=""
+* mock回调支付通知接口,order_id=<order_id>,flag=""
+
+# mock支付后数据库检查,order_id=<order_id>
+* 支付成功后,订单表字段check,order_id=<order_id>
+* 支付成功后,支付表字段check,order_id=<order_id>
+
+# 发货后数据库检查,order_id=<order_id>
+* 发货成功后，订单表字段check,order_id=<order_id>
+
+
+# 买家申请退款操作,order_id=<order_id>,refund_amount=<refund_amount>
+* 买家申请退款,order_id=<order_id>,refund_amount=<refund_amount>
+
+
+# mock订单退款请求完成退款,order_id=<order_id>
+* MMS商家同意退款,order_id=<order_id>
+* 获取aftersale_id和payment_refund_id参数用于mock接口退款,order_id=<order_id>
+* mock回调退款通知接口
+
+
+# 用户最大限度领取优惠券,参数:券id=<coupon_id>
+* 获取乐高项目优惠券详情页,项目id=""
+* 用户领取优惠券,券id=<coupon_id>
