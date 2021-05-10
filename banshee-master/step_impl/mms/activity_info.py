@@ -5,7 +5,7 @@ from api.mms.activity.activity_punish import ActivityPunish
 from models.mt.pt_merchant import MallPunishmentLimit as MallModel
 
 
-@step("获取商家端活动列表,act_type=<act_type>,act_cate=<act_cate>")
+@step("获取商家端活动列表,更改更改act_type=<act_type>,act_cate=<act_cate>")
 def activity_list(act_type,act_cate):
     activity_list = ActivityList()
     activity_list.data['act_type'] = int(act_type)
